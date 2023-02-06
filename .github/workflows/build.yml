@@ -22,10 +22,10 @@ jobs:
         run: mkdir dist
 
       - name: Build windows/amd64
-        run: GOOS=windows GOARCH=amd64 go build -o dist/wsl2-ssh-pageant-amd64
+        run: GOOS=windows GOARCH=amd64 go build -o dist/wsl2-ssh-pageant-amd64.exe
 
       - name: Build windows/arm64
-        run: GOOS=windows GOARCH=arm64 go build -o dist/wsl2-ssh-pageant-arm64
+        run: GOOS=windows GOARCH=arm64 go build -o dist/wsl2-ssh-pageant-arm64.exe
 
       - name: Upload build artifacts
         uses: skx/github-action-publish-binaries@master
