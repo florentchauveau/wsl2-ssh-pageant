@@ -1,37 +1,49 @@
-# wsl2-ssh-pageant [![Go](https://github.com/davidshen84/wsl2-ssh-pageant/actions/workflows/go.yml/badge.svg)](https://github.com/davidshen84/wsl2-ssh-pageant/actions/workflows/go.yml)
+# wsl2-ssh-pageant
+
+[![Go Report Card](https://goreportcard.com/badge/github.com/florentchauveau/wsl2-ssh-pageant)](https://goreportcard.com/report/github.com/florentchauveau/wsl2-ssh-pageant)
+![CI](https://github.com/florentchauveau/wsl2-ssh-pageant/actions/workflows/build.yml/badge.svg)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/florentchauveau/wsl2-ssh-pageant/blob/master/LICENSE)
+
+## Note
+
+This is a fork of [BlackReloaded/wsl2-ssh-pageant](https://github.com/BlackReloaded/wsl2-ssh-pageant). The original project has been archived. I have added support for ARM64 for Windows.
 
 ## Motivation
+
 I use a Yubikey to store a GPG key pair and I like to use this key pair as my SSH key too. GPG on Windows exposes a Pageant style SSH agent and I wanted a way to use this key within WSL2.
 
 ## How to use with WSL2
 
 ### Prerequisite
+
 In order to use `wsl-ssh-pageant` you must have installed `socat` and `ss` on your machine.
 
 For example, on Ubuntu you can install these by running: `sudo apt install socat iproute2`
 
 ### Installation
+
 1. Download latest version from [release page](https://github.com/BlackReloaded/wsl2-ssh-pageant/releases/latest) and copy `wsl2-ssh-pageant.exe` to your windows home directory (or other location within the windows file system). Then simlink to your `$HOME/.ssh` directory for easy access
-    ```bash
-    windows_destination="/mnt/c/Users/Public/Downloads/wsl2-ssh-pageant.exe"
-    linux_destination="$HOME/.ssh/wsl2-ssh-pageant.exe"
-    wget -O "$windows_destination" "https://github.com/BlackReloaded/wsl2-ssh-pageant/releases/latest/download/wsl2-ssh-pageant.exe"
-    # Set the executable bit.
-    chmod +x "$windows_destination"
-    # Symlink to linux for ease of use later
-    ln -s $windows_destination $linux_destination
-    ```
+   ```bash
+   windows_destination="/mnt/c/Users/Public/Downloads/wsl2-ssh-pageant.exe"
+   linux_destination="$HOME/.ssh/wsl2-ssh-pageant.exe"
+   wget -O "$windows_destination" "https://github.com/BlackReloaded/wsl2-ssh-pageant/releases/latest/download/wsl2-ssh-pageant.exe"
+   # Set the executable bit.
+   chmod +x "$windows_destination"
+   # Symlink to linux for ease of use later
+   ln -s $windows_destination $linux_destination
+   ```
 2. Add one of the following to your shell configuration (for e.g. `.bashrc`, `.zshrc` or `config.fish`). For advanced configurations consult the documentation of your shell.
 
 ### Usage
 
 Use `wsl2-ssh-peagent --help` to get available options. Example scripts have been provided for popular shell.
 
-- `--gpgConfigBase`: If you use **Gpg4Win** and installed with *Administrator* privilege, the `gnupg` folder will be at
-`%LOCALAPPDATA%`. In this case you need to use this option to provide the location of the `gnupg` folder in your Windows
-system. Note, you should use `/` in the path to avoid slash-escape complications. E.g. `--gpgConfigbase c:/Users/userA/AppData/Local/gnupg`
+- `--gpgConfigBase`: If you use **Gpg4Win** and installed with _Administrator_ privilege, the `gnupg` folder will be at
+  `%LOCALAPPDATA%`. In this case you need to use this option to provide the location of the `gnupg` folder in your Windows
+  system. Note, you should use `/` in the path to avoid slash-escape complications. E.g. `--gpgConfigbase c:/Users/userA/AppData/Local/gnupg`
 
 #### Gpg [agent forward](https://wiki.gnupg.org/AgentForwarding)
+
 When working on the remote system through SSH, you may want to use the private key in your local Yubikey, e.g. decrypt a
 message or sign a git commit. This can be achieved using the steps on [this
 blog](https://mlohr.com/gpg-agent-forwarding/).
@@ -43,7 +55,8 @@ blog](https://mlohr.com/gpg-agent-forwarding/).
 
 #### Bash/Zsh
 
-*SSH:*
+_SSH:_
+
 ```bash
 export SSH_AUTH_SOCK="$HOME/.ssh/agent.sock"
 if ! ss -a | grep -q "$SSH_AUTH_SOCK"; then
@@ -58,7 +71,8 @@ if ! ss -a | grep -q "$SSH_AUTH_SOCK"; then
 fi
 ```
 
-*GPG:*
+_GPG:_
+
 ```bash
 export GPG_AGENT_SOCK="$HOME/.gnupg/S.gpg-agent"
 # export GPG_AGENT_EXTRA_SOCK="$HOME/.gnupg/S.gpg-agent.extra" # uncomment if you want to use agent forwarding
@@ -77,7 +91,8 @@ fi
 
 #### Fish
 
-*SSH:*
+_SSH:_
+
 ```fish
 set -x SSH_AUTH_SOCK "$HOME/.ssh/agent.sock"
 if not ss -a | grep -q "$SSH_AUTH_SOCK";
@@ -92,7 +107,8 @@ if not ss -a | grep -q "$SSH_AUTH_SOCK";
 end
 ```
 
-*GPG:*
+_GPG:_
+
 ```fish
 set -x GPG_AGENT_SOCK "$HOME/.gnupg/S.gpg-agent"
 # set -x GPG_AGENT_EXTRA_SOCK "$HOME/.gnupg/S.gpg-agent.extra" # uncomment if you want to use agent forwarding
@@ -112,6 +128,7 @@ end
 ## Troubleshooting
 
 ### Smartcard is detected in Windows and WSL, but ssh-add -L returns error
+
 If this is the first time you using yubikey with windows with gpg4win, please follow the instructions in the link
 https://developers.yubico.com/PGP/SSH_authentication/Windows.html
 
@@ -123,6 +140,7 @@ gpg-connect-agent /bye
 ```
 
 ### Agent response times are very slow
+
 If ssh,ssh-add,gpg etc are very slow (~15-25 seconds) check that wsl2-ssh-pageant resides on the windows file system. This is due to an issue with the WSL interop documented [here](https://github.com/BlackReloaded/wsl2-ssh-pageant/issues/24) and [here](https://github.com/microsoft/WSL/issues/7591)
 
 ## Credit
